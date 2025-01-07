@@ -1,6 +1,7 @@
 package imgorganizer
 
 import (
+    "flag"
 	"fmt"
 	"log"
 	"os"
@@ -41,25 +42,23 @@ func run(arg string, errorlog chan error) {
 
 
 func main() {
+    var is_help = flag.Bool("h", false, "Display help message.");
+    flag.Parse();
+
+    if *is_help {
+        fmt.Println(help());
+        os.Exit(0);
+    }
+
     logfile, err := os.OpenFile(LOG_FILE, os.O_APPEND | os.O_CREATE, 700);
     if err != nil {
         log.Panic("Couldn't open log file!\n");
-    }
-
-    if len(os.Args) == 1 {
-        fmt.Println(help());
-        os.Exit(0);
     }
 
     errorlogs := make(chan error, len(os.Args));
 
     for i := 1; i < len(os.Args); i++ {
         arg := os.Args[i];
-
-        if arg == "help" || arg == "-h" || arg == "--help" {
-            fmt.Println(help());
-            os.Exit(0);
-        }
 
         go run(arg, errorlogs);
     }
