@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strconv"
@@ -62,11 +61,6 @@ func main() {
         flag.Usage();
     }
 
-    logfile, err := os.OpenFile(LOG_FILE, os.O_APPEND | os.O_CREATE, 0666);
-    if err != nil {
-        log.Panic("Couldn't open log file!\n");
-    }
-
     resultlogs := make(chan Result, len(os.Args));
 
     for i := 1; i < len(flag.Args()); i++ {
@@ -78,8 +72,7 @@ func main() {
     for i := 1; i < len(flag.Args()); i++ {
         result := <- resultlogs;
         if result.Error != nil {
-            fmt.Fprintf(os.Stderr, "%s\n", err.Error());
-            logfile.WriteString(result.Arg)
+            fmt.Fprintf(os.Stderr, "%s\n", result.Error.Error());
         }
     }
 }

@@ -11,9 +11,9 @@ const help_message string =
 img-organizer
 
 Organizes images into directories of the year they were taken.
-Image names that failed are saved in img-organizer.log
 
 Usage: img-organizer <file> ...
+
 `;
 
 func setup_flags() {

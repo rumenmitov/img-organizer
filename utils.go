@@ -6,9 +6,6 @@ import (
 )
 
 
-const LOG_FILE string = "img-organizer.log";
-
-
 func get_year(file *os.File) (int, error) {
     img, err := exif.Decode(file);
     if err != nil {
