@@ -14,16 +14,13 @@ will be printed to _stderr_.
   img-organizer <file> ...
 #+end_src
 
-Users can pass in one or more files at a time. Processing happens concurrently.
-If no files are provided, a default help message is printed.
+Users can pass in one or more files at a time. Processing happens concurrently. If no files are provided, a default help message is printed.
 
-* Installation
-** Requirements
-:drawer:
+* Requirements
+
 - go
-
   
-:end:
+* Installation
 
 Make sure packages from your =$GOPATH/bin= are accessible in your =$PATH=:
 #+begin_src shell
