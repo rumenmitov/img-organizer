@@ -80,6 +80,10 @@ func get_year_exif(file *os.File) (int, error) {
 func get_year_prefix(name string) (int, error) {
     prefix_len := len(ProgramConfig.Prefix);
 
+    if len(name) < prefix_len {
+        return -1, fmt.Errorf("File name shorter than prefix length: %s", name);
+    }
+
     if name[0:prefix_len] != ProgramConfig.Prefix {
         return -1, fmt.Errorf("File name does not match prefix: %s", name);
     }
