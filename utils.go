@@ -3,8 +3,6 @@ package main;
 import (
 	"os"
     "fmt"
-	"path"
-	"strconv"
 	"github.com/xor-gate/goexif2/exif"
 )
 
