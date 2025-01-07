@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+    "time"
 
 	"github.com/xor-gate/goexif2/exif"
 )
@@ -80,12 +81,16 @@ func get_year_prefix(name string) (int, error) {
     prefix_len := len(ProgramConfig.Prefix);
 
     if name[0:prefix_len] != ProgramConfig.Prefix {
-        return -1, fmt.Errorf("File name does not match 'IMG-' prefix: %s", name);
+        return -1, fmt.Errorf("File name does not match prefix: %s", name);
     }
 
     year, err := strconv.Atoi(name[prefix_len:prefix_len + 4]);
     if err != nil {
         return -1, err;
+    }
+
+    if year > time.Now().Year() {
+        return -1, fmt.Errorf("Year in file name is invalid: %s", name);
     }
 
     return year, nil;
