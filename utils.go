@@ -1,4 +1,4 @@
-package imgorganizer;
+package main;
 
 import (
 	"os"

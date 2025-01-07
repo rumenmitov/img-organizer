@@ -1,24 +1,35 @@
-package imgorganizer
+package main
 
 import (
-    "flag"
+	"flag"
 	"fmt"
 	"log"
 	"os"
-    "path"
-    "strconv"
+	"path"
+	"strconv"
 )
 
-func run(arg string, errorlog chan error) {
+type Result struct {
+    Arg string;
+    Error error;
+};
+
+func run(arg string, resultlog chan Result) {
+    var result Result;
+    result.Arg = arg;
+    result.Error = nil;
+
     file, err := os.Open(arg);
     if err != nil {
-        errorlog <- fmt.Errorf("Couldn't open file: %s\n", arg);
+        result.Error = fmt.Errorf("Couldn't open file: %s\n", arg);
+        resultlog <- result;
         return;
     }
 
     year, err := get_year(file);
     if err != nil {
-        errorlog <- fmt.Errorf("Couldn't parse EXIF of file: %s\n", arg);
+        result.Error = fmt.Errorf("Couldn't parse EXIF of file: %s\n", arg);
+        resultlog <- result;
         return;
     }
 
@@ -26,49 +37,49 @@ func run(arg string, errorlog chan error) {
 
     err = os.MkdirAll(yearstr, 777); 
     if err != nil {
-        errorlog <- fmt.Errorf("Couldn't open directory %s for %s\n", yearstr, arg);
+        result.Error = fmt.Errorf("Couldn't open directory %s for %s\n", yearstr, arg);
+        resultlog <- result;
         return;
     }
 
 
     err = os.Rename(arg, path.Join(".", yearstr, arg));
     if err != nil {
-        errorlog <- fmt.Errorf("Couldn't move %s\n", arg);
+        result.Error = fmt.Errorf("Couldn't move %s\n", arg);
+        resultlog <- result;
         return;
     }
 
-    errorlog <- nil;
+    resultlog <- result;
 }
 
 
 func main() {
-    var is_help = flag.Bool("h", false, "Display help message.");
+    setup_flags();
     flag.Parse();
 
-    if *is_help {
-        fmt.Println(help());
-        os.Exit(0);
+    if (len(os.Args) == 1) {
+        flag.Usage();
     }
 
-    logfile, err := os.OpenFile(LOG_FILE, os.O_APPEND | os.O_CREATE, 700);
+    logfile, err := os.OpenFile(LOG_FILE, os.O_APPEND | os.O_CREATE, 0666);
     if err != nil {
         log.Panic("Couldn't open log file!\n");
     }
 
-    errorlogs := make(chan error, len(os.Args));
+    resultlogs := make(chan Result, len(os.Args));
 
-    for i := 1; i < len(os.Args); i++ {
+    for i := 1; i < len(flag.Args()); i++ {
         arg := os.Args[i];
 
-        go run(arg, errorlogs);
+        go run(arg, resultlogs);
     }
 
-    for i := 0; i < len(os.Args); i++ {
-        err := <- errorlogs;
-        if err != nil {
-            fmt.Fprintf(os.Stderr, err.Error());
-            logfile.WriteString(arg)
-
+    for i := 1; i < len(flag.Args()); i++ {
+        result := <- resultlogs;
+        if result.Error != nil {
+            fmt.Fprintf(os.Stderr, "%s\n", err.Error());
+            logfile.WriteString(result.Arg)
         }
     }
 }
