@@ -46,6 +46,11 @@ func main() {
         log.Panic("Couldn't open log file!\n");
     }
 
+    if len(os.Args) == 1 {
+        fmt.Println(help());
+        os.Exit(0);
+    }
+
     errorlogs := make(chan error, len(os.Args));
 
     for i := 1; i < len(os.Args); i++ {
