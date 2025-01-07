@@ -12,6 +12,7 @@ import (
 // Used to pass information from goroutine back to sender.
 type Result struct {
     Arg string;
+    Year int;
     Error error;
 };
 
@@ -34,23 +35,7 @@ func run(arg string, resultlog chan Result) {
         return;
     }
 
-    yearstr := strconv.Itoa(year);
-
-    err = os.MkdirAll(yearstr, 0777); 
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't open directory %s for %s\n", yearstr, arg);
-        resultlog <- result;
-        return;
-    }
-
-
-    err = os.Rename(arg, path.Join(".", yearstr, arg));
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't move %s\n", arg);
-        resultlog <- result;
-        return;
-    }
-
+    result.Year = year;
     resultlog <- result;
 }
 

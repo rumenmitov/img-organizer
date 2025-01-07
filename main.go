@@ -16,6 +16,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+    "strconv"
+    "path"
 )
 
 
@@ -38,7 +40,28 @@ func main() {
     for i := 0; i < len(flag.Args()); i++ {
         result := <- resultlogs;
         if result.Error != nil {
-            fmt.Fprintf(os.Stderr, "%s\n", result.Error.Error());
+            fmt.Fprintf(os.Stderr, "%s", result.Error.Error());
+            continue;
+        }
+
+        yearstr := strconv.Itoa(result.Year);
+
+        err := os.MkdirAll(yearstr, 0777); 
+        if err != nil {
+            fmt.Fprintf(
+                os.Stderr, 
+                "Couldn't open directory %s for %s\n", 
+                yearstr, 
+                result.Arg);
+
+            continue;
+        }
+
+
+        err = os.Rename(result.Arg, path.Join(".", yearstr, result.Arg));
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "Couldn't move %s\n", result.Arg);
+            continue;
         }
     }
 }
