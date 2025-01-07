@@ -36,7 +36,7 @@ func run(arg string, resultlog chan Result) {
 
     yearstr := strconv.Itoa(year);
 
-    err = os.MkdirAll(yearstr, 777); 
+    err = os.MkdirAll(yearstr, 0777); 
     if err != nil {
         result.Error = fmt.Errorf("Couldn't open directory %s for %s\n", yearstr, arg);
         resultlog <- result;
