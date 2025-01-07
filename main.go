@@ -29,13 +29,13 @@ func main() {
 
     resultlogs := make(chan Result, len(os.Args));
 
-    for i := 1; i < len(flag.Args()); i++ {
-        arg := os.Args[i];
+    for i := 0; i < len(flag.Args()); i++ {
+        arg := flag.Args()[i];
 
         go run(arg, resultlogs);
     }
 
-    for i := 1; i < len(flag.Args()); i++ {
+    for i := 0; i < len(flag.Args()); i++ {
         result := <- resultlogs;
         if result.Error != nil {
             fmt.Fprintf(os.Stderr, "%s\n", result.Error.Error());
