@@ -1,56 +1,22 @@
+/*
+Img-organizer organizes images into directories of the year they were taken.
+
+The year is taken from the file's EXIF data. If this is not possible, an error
+will be printed to stderr.
+
+Usage:
+    img-organizer <file> ...
+
+Users can pass in one or more files at a time. Processing happens concurrently.
+If no files are provided, a default help message is printed.
+*/
 package main
 
 import (
 	"flag"
 	"fmt"
 	"os"
-	"path"
-	"strconv"
 )
-
-type Result struct {
-    Arg string;
-    Error error;
-};
-
-func run(arg string, resultlog chan Result) {
-    var result Result;
-    result.Arg = arg;
-    result.Error = nil;
-
-    file, err := os.Open(arg);
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't open file: %s\n", arg);
-        resultlog <- result;
-        return;
-    }
-
-    year, err := get_year(file);
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't parse EXIF of file: %s\n", arg);
-        resultlog <- result;
-        return;
-    }
-
-    yearstr := strconv.Itoa(year);
-
-    err = os.MkdirAll(yearstr, 777); 
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't open directory %s for %s\n", yearstr, arg);
-        resultlog <- result;
-        return;
-    }
-
-
-    err = os.Rename(arg, path.Join(".", yearstr, arg));
-    if err != nil {
-        result.Error = fmt.Errorf("Couldn't move %s\n", arg);
-        resultlog <- result;
-        return;
-    }
-
-    resultlog <- result;
-}
 
 
 func main() {

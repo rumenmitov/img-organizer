@@ -16,6 +16,8 @@ Usage: img-organizer <file> ...
 
 `;
 
+
+// Overrides flag.Usage to print help message, then exit program.
 func setup_flags() {
     flag.Usage = func() {
         fmt.Print(help_message);
