@@ -1,0 +1,36 @@
+#+title: Image Organizer
+#+author: Rumen Mitov
+
+* About
+
+Img-organizer organizes images into directories of the year they were taken.
+
+The year is taken from the file's EXIF data. If this is not possible, an error
+will be printed to _stderr_.
+
+* Usage:
+
+#+begin_src shell
+  img-organizer <file> ...
+#+end_src
+
+Users can pass in one or more files at a time. Processing happens concurrently.
+If no files are provided, a default help message is printed.
+
+* Installation
+** Requirements
+:drawer:
+- go
+
+  
+:end:
+
+Make sure packages from your =$GOPATH/bin= are accessible in your =$PATH=:
+#+begin_src shell
+  export $PATH=$PATH:$GOPATH/bin
+#+end_src
+
+To install clone this repo and =cd= into it. Then run:
+#+begin_src shell
+  go install .
+#+end_src
